@@ -26,6 +26,15 @@ data:
         }
         {{- end}}
 
+                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool"}}
+                map $http_apikey $api_key {
+                    default "";
+                    "KSDLSAJsjkasdjkasd832789" “client_one”;
+                    "7B5zIqmRGXmrJTFmKa99vcit" “client_two”;
+                    "12345" “client_three”;
+                }
+                {{end -}}
+
         {{range $server := .Servers}}
         server {
         	{{if $server.SpiffeCerts}}
@@ -183,15 +192,33 @@ data:
         		return 302 {{$location.LoginURL}};
         	}
         	{{end -}}
+                
+                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool"}}         
+                location = /_validate_apikey {
+                   internal; 
+                   if ($http_apikey  = "") {
+                     return 401; # Unauthorized
+                   }
+                   if ($api_key = "") {
+                     return 403;
+                   }
+                   return 204; 
+                   }	
+        	{{end -}}
 
         	{{range $location := $server.Locations}}
         	location {{  makeLocationPath $location $.Ingress.Annotations | printf }} {
         		set $service "{{$location.ServiceName}}";
         		status_zone "{{ $location.ServiceName }}";
+
                         {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool"}}
-                        {{$pool := index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool"}}
-                        allow {{$pool}};
+                        {{$loc_api := index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool"}}
+                        {{$current_loc := makeLocationPath $location $.Ingress.Annotations | printf}}	
+                        {{if eq $current_loc $loc_api}}
+                        auth_request /_validate_apikey; 
                         {{- end}}
+                        {{- end}}
+
         		{{with $location.MinionIngress}}
         		# location for minion {{$location.MinionIngress.Namespace}}/{{$location.MinionIngress.Name}}
         		set $resource_name "{{$location.MinionIngress.Name}}";
