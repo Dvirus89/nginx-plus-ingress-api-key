@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    custom.nginx.org/auth-api-key-pool: /coffee:6,/teaa:3,/asdsadasd:6
+  name: cafe-ingress
+  namespace: cafe
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: cafe.example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: cafe-svc
+            port:
+              number: 80
+        path: /teaaa
+        pathType: Prefix
+      - backend:
+          service:
+            name: cafe-svc
+            port:
+              number: 80
+        path: /coffee
+        pathType: Prefix
+status:
+  loadBalancer: {}
