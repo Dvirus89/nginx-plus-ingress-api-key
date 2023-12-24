@@ -55,7 +55,6 @@ data:
                     default "";
                     $api_key7 $api_key7;
                 }
-                     include /etc/nginx/conf.d/api_key_pool2.conf;  
                      include /etc/nginx/conf.d/keys/*.conf;  
                 {{end -}}
 
