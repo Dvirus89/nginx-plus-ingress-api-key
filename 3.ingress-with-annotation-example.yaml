@@ -2,7 +2,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    custom.nginx.org/auth-api-key-pool: /coffee:6,/teaa:3,/asdsadasd:6
+      custom.nginx.org/auth-api-key-pool: /coffee:1,/teaaaa:2
+      custom.nginx.org/auth-api-key-pool-store1: 1,22,333,4444,55555,666666,7777777
+      custom.nginx.org/auth-api-key-pool-store2: A,BB,CCC,DDDD
   name: cafe-ingress
   namespace: cafe
 spec:
