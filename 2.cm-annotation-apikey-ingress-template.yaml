@@ -25,79 +25,17 @@ data:
         	{{- end}}
         }
         {{- end}}
-
-                map $http_apikey $api_key1 {
-                    default "";
-                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store1"}}
-                    {{- range $key := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store1") ","}}
-                    "{{$key}}" "{{$key}}";
-                    {{end}}
-                {{end}}
-                }
-                map $http_apikey $api_key2 {
-                    default "";
-                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store2"}}
-                    {{- range $key := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store2") ","}}
-                    "{{$key}}" "{{$key}}";
-                    {{end}}
-                {{end}}
-                }
-                map $http_apikey $api_key3 {
-                    default "";
-                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store3"}}
-                    {{- range $key := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store3") ","}}
-                    "{{$key}}" "{{$key}}";
-                    {{end}}
-                {{end}}
-                }
-                map $http_apikey $api_key4 {
-                    default "";
-                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store4"}}
-                    {{- range $key := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store4") ","}}
-                    "{{$key}}" "{{$key}}";
-                    {{end}}
-                {{end}}
-                }
-                map $http_apikey $api_key5 {
-                    default "";
-                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store5"}}
-                    {{- range $key := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store5") ","}}
-                    "{{$key}}" "{{$key}}";
-                    {{end}}
-                {{end}}
-                }
-                map $http_apikey $api_key6 {
-                    default "";
-                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store6"}}
-                    {{- range $key := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store6") ","}}
-                    "{{$key}}" "{{$key}}";
-                    {{end}}
-                {{end}}
-                }
-                map $http_apikey $api_key7 {
-                    default "";
-                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store7"}}
-                    {{- range $key := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store7") ","}}
-                    "{{$key}}" "{{$key}}";
-                    {{end}}
-                {{end}}
-                }
-                map $http_apikey $api_key8 {
-                    default "";
-                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store8"}}
-                    {{- range $key := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store8") ","}}
-                    "{{$key}}" "{{$key}}";
-                    {{end}}
-                {{end}}
-                }
-                map $http_apikey $api_key9 {
-                    default "";
-                {{if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store9"}}
-                    {{- range $key := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool-store9") ","}}
-                    "{{$key}}" "{{$key}}";
-                    {{end}}
-                {{end}}
-                }
+                # API KEY START
+                {{- range $i := split "1,2,3,4,5,6,7,8,9,10" ","}}
+                    map $http_apikey $api_key{{$i}} {
+                        default "";
+                        {{- if index $.Ingress.Annotations (printf "custom.nginx.org/auth-api-key-pool-store%s" $i)}}
+                            {{range $key := split (index $.Ingress.Annotations (printf "custom.nginx.org/auth-api-key-pool-store%s" $i)) ","}}                                     "{{$key}}" "{{$key}}";
+                            {{end}}
+                        {{- end}}
+                    }
+                {{- end}}
+                # API KEY END
 
         {{range $server := .Servers}}
         server {
@@ -256,93 +194,37 @@ data:
         		return 302 {{$location.LoginURL}};
         	}
         	{{end -}}
-                
-                {{- if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool"}}         
-                location = /_validate_apikey1 {
-                   internal; 
-                   if ($http_apikey  = "") {
-                     return 401; # Unauthorized
-                   }
-                   if ($api_key1 = "") {
-                     return 403;
-                   }
-                   return 204; 
-                   }	
-                 location = /_validate_apikey2 {
-                   internal; 
-                   if ($http_apikey  = "") {
-                     return 401; # Unauthorized
-                   }
-                   if ($api_key2 = "") {
-                     return 403;
-                   }
-                   return 204; 
-                   }	
-                 location = /_validate_apikey3 {
-                   internal; 
-                   if ($http_apikey  = "") {
-                     return 401; # Unauthorized
-                   }
-                   if ($api_key3 = "") {
-                     return 403;
-                   }
-                   return 204; 
-                   }	
-                 location = /_validate_apikey4 {
-                   internal; 
-                   if ($http_apikey  = "") {
-                     return 401; # Unauthorized
-                   }
-                   if ($api_key4 = "") {
-                     return 403;
-                   }
-                   return 204; 
-                   }	
-                 location = /_validate_apikey5 {
-                   internal; 
-                   if ($http_apikey  = "") {
-                     return 401; # Unauthorized
-                   }
-                   if ($api_key5 = "") {
-                     return 403;
-                   }
-                   return 204; 
-                   }	
-                 location = /_validate_apikey6 {
-                   internal; 
-                   if ($http_apikey  = "") {
-                     return 401; # Unauthorized
-                   }
-                   if ($api_key6 = "") {
-                     return 403;
-                   }
-                   return 204; 
-                   }	
-                 location = /_validate_apikey7 {
-                   internal; 
-                   if ($http_apikey  = "") {
-                     return 401; # Unauthorized
-                   }
-                   if ($api_key7 = "") {
-                     return 403;
-                   }
-                   return 204; 
-                   }	
-        	{{end -}}
 
-        	{{range $location := $server.Locations}}
+                # API KEY START
+                {{range $i := split "1,2,3,4,5,6,7,8,9,10" ","}} 
+                location = /_validate_apikey{{$i}} {
+                   internal; 
+                   if ($http_apikey  = "") {
+                     return 401; # Unauthorized
+                   }
+                   if ($api_key{{$i}} = "") {
+                     return 403;
+                   }
+                   return 204; 
+                   }
+                {{- end}}     
+                # API KEY END
+                
+                {{range $location := $server.Locations}}
         	location {{  makeLocationPath $location $.Ingress.Annotations | printf }} {
         		set $service "{{$location.ServiceName}}";
         		status_zone "{{ $location.ServiceName }}";
+                        # API KEY START
                         {{- if index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool"}}
                           {{- range $loc_api_set := split (index $.Ingress.Annotations "custom.nginx.org/auth-api-key-pool") ","}}
                             {{- $value_set := split $loc_api_set ":"}}
                             {{- $current_loc := makeLocationPath $location $.Ingress.Annotations | printf}}	
                             {{- if eq $current_loc (index $value_set 0) }}
-                        auth_request /_validate_apikey{{(index $value_set 1)}}; 
+                        auth_request /_validate_apikey{{(index $value_set 1 )}}; 
                             {{- end -}}
                           {{- end}}
                         {{- end}}
+                        # API KEY END
 
         		{{with $location.MinionIngress}}
         		# location for minion {{$location.MinionIngress.Namespace}}/{{$location.MinionIngress.Name}}
@@ -502,3 +384,4 @@ data:
         	location @grpcerror504 { default_type application/grpc; return 504 "\n"; }
         	{{end}}
         }{{end}}
+
